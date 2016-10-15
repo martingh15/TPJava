@@ -94,7 +94,7 @@ public class Menu {
 		JButton btnCombate = new JButton("Combate");
 		btnCombate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				atacar();
+				cargarCombate();
 			}
 		});
 		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
@@ -154,14 +154,11 @@ public class Menu {
 		if(dataPer.coincideNombre(p1) && dataPer.coincideNombre(p2))
 		{
 			valido = true;
-		}
-		//Manejar excepcion si no coincide
-		
-	
+		}	
 		return valido;
 	}
 	
-	private void atacar() {
+	private void cargarCombate() {
 		try {
 			if(validarPersonajes())
 			{
@@ -169,7 +166,8 @@ public class Menu {
 				Personaje per2 = new Personaje();
 				per1 = dataPer.getByName(txtPersonaje1.getText());
 				per2 = dataPer.getByName(txtPersonaje2.getText());				
-				Combate ventanaCombate = new Combate(per1,per2);
+				Combate ventanaCombate = new Combate();
+				ventanaCombate.cargarPersonajes(per1,per2);
 				ventanaCombate.setVisible(true);
 			}
 			else

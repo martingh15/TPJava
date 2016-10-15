@@ -40,11 +40,7 @@ public class Combate extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public Combate(Personaje per1, Personaje per2) {
-
-		p1 = per1;
-		p2 = per2;
-		MapearAFormulario(p1,p2);
+	public Combate() {
 		setModal(true);
 		setBounds(100, 100, 466, 471);
 		getContentPane().setLayout(new BorderLayout());
@@ -242,5 +238,11 @@ public class Combate extends JDialog {
 			txtEvasion2.setText(String.valueOf(per2.getEvasion()));
 			txtVida2.setText(String.valueOf(per2.getVida()));
 		
+	}
+	
+	public void cargarPersonajes(Personaje per1, Personaje per2) {
+		p1 = per1;
+		p2 = per2;
+		MapearAFormulario(p1,p2);
 	}
 }
