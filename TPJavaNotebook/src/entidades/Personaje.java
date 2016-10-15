@@ -3,6 +3,10 @@ package entidades;
 public class Personaje {
 	private int id,vida,energia,defensa,evasion,puntosTotales;
 	private String nombre;
+	
+	public Personaje() {
+		
+	}
 	public int getId() {
 		return id;
 	}

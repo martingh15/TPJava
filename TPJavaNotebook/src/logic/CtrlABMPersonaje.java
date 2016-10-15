@@ -1,8 +1,9 @@
 package logic;
 import java.util.ArrayList;
-import java.util.*;
-import data.DataPersonaje;
 
+import utils.ApplicationException;
+
+import data.DataPersonaje;
 import entidades.Personaje;
 
 public class CtrlABMPersonaje {
@@ -17,30 +18,39 @@ public class CtrlABMPersonaje {
 		dataPer = new DataPersonaje();
 	}
 	
-	public void agregarPersonaje(Personaje p)
+	public void agregarPersonaje(Personaje p) throws ApplicationException
 	{
-		dataPer.add(p);
+		//En vez de agredarlo directamente hago un metodo para tirar la exception
+		if(!dataPer.coincideNombre(p)) {
+			dataPer.add(p);
+		} else
+		{
+			throw new ApplicationException("Ya existe un personaje con ese nombre");
+		}
 	}
 	
 	public int recuperarID()
 	{
-		return personajes.size();
+		return dataPer.consultarMax();
 	}
 	
-	public Personaje busca(int id)
+	public Personaje busca(Personaje p) throws ApplicationException
 	{
-		Personaje p = new Personaje();
-		p = personajes.get(id);
-		return p;
+		Personaje per = dataPer.getById(p);
+		return per;
 	}
-	public void borrarPersonaje(int id)
+	public void borrarPersonaje(Personaje p)
 	{
-		Personaje p = this.busca(id);
-		personajes.remove(id);
+		dataPer.delete(p);
 	}
 
 	public void modificar(Personaje p) {
-		
+		try {
+			dataPer.update(p);
+		} catch (ApplicationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 }
