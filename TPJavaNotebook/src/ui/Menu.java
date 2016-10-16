@@ -19,6 +19,7 @@ import entidades.Personaje;
 import logic.CtrlABMPersonaje;
 import utils.ApplicationException;
 import utils.SuperLogger;
+import utils.ReproduceAudio;
 
 import java.awt.Font;
 import java.awt.HeadlessException;
@@ -57,6 +58,8 @@ public class Menu {
 	public Menu() {
 		initialize();
 		dataPer = new DataPersonaje();
+		ReproduceAudio rep = new ReproduceAudio();
+		rep.reproducir();
 	}
 
 	/**
@@ -73,8 +76,6 @@ public class Menu {
 			public void mouseClicked(MouseEvent arg0) {
 				ABMPersonajes ventanaABMPer = new ABMPersonajes();
 				ventanaABMPer.setVisible(true);
-			
-			
 			}
 		});
 		

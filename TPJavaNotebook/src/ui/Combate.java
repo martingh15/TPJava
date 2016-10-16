@@ -8,13 +8,21 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import org.apache.logging.log4j.Level;
+
 import entidades.Personaje;
+import logic.CtrlCombate;
+import utils.ApplicationException;
+import utils.SuperLogger;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JTextField;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Combate extends JDialog {
 
@@ -36,6 +44,8 @@ public class Combate extends JDialog {
 	private JTextField txtEnergiaUsar;
 	private Personaje p1 = new Personaje();
 	private Personaje p2 = new Personaje();
+	private CtrlCombate cc = new CtrlCombate();
+	int turno=1;
 
 	/**
 	 * Create the dialog.
@@ -102,12 +112,25 @@ public class Combate extends JDialog {
 		txtTurno.setColumns(10);
 		
 		btnAtaque = new JButton("Atacar");
+		btnAtaque.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				atacar();
+			}
+		});
 		
 		btnDefender = new JButton("Defender");
+		btnDefender.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				defender();
+			}
+
+			
+		});
 		
 		lblEnergiaAUsar = new JLabel("Energia a usar:");
 		
 		txtEnergiaUsar = new JTextField();
+		txtEnergiaUsar.setToolTipText("Ingrese energia para el ataque");
 		txtEnergiaUsar.setColumns(10);
 		GroupLayout gl_contentPanel = new GroupLayout(contentPanel);
 		gl_contentPanel.setHorizontalGroup(
@@ -237,6 +260,8 @@ public class Combate extends JDialog {
 			txtEnergia2.setText(String.valueOf(per2.getEnergia()));
 			txtEvasion2.setText(String.valueOf(per2.getEvasion()));
 			txtVida2.setText(String.valueOf(per2.getVida()));
+			
+			txtTurno.setText(per1.getNombre());
 		
 	}
 	
@@ -244,5 +269,89 @@ public class Combate extends JDialog {
 		p1 = per1;
 		p2 = per2;
 		MapearAFormulario(p1,p2);
+		cc.seteaPer(p1,p2);
+	}
+	
+	private void atacar() {
+		try {
+			if (turno == 1)
+			{
+				if(cc.validaEnergia(Integer.parseInt(txtEnergiaUsar.getText()),1)){
+			     if(!cc.evadir(1))
+			     {
+				txtVida2.setText(String.valueOf(cc.quitaVida(txtEnergiaUsar.getText(),1)));
+				
+				  }
+				else 
+				{
+					notifyUser("Ataque evadido");
+				}
+			     txtEnergia1.setText(String.valueOf(cc.quitaEnergia(txtEnergiaUsar.getText(),1))); 
+				if(cc.validarPartida(turno)) 
+				{
+					notifyUser("El jugador "+txtPersonaje1.getText()+" ha ganado la partida. Tiene 10 puntos mas para asignar!");
+					this.dispose();
+				};
+				
+				txtTurno.setText(p2.getNombre());
+				turno = 2;
+				}
+				else { throw new ApplicationException(); }
+				
+			}
+			else //if (String.valueOf(txtTurno.getText()) == String.valueOf(txtPersonaje2.getText()))
+			{
+				if(cc.validaEnergia(Integer.parseInt(txtEnergiaUsar.getText()),2)){
+					if(!cc.evadir(1))
+				     {
+				txtVida1.setText(String.valueOf(cc.quitaVida(txtEnergiaUsar.getText(),2))); 
+				
+				     }
+					else 
+					{
+						notifyUser("Ataque evadido");
+					}
+					txtEnergia2.setText(String.valueOf(cc.quitaEnergia(txtEnergiaUsar.getText(),2))); 
+				if(cc.validarPartida(turno)) 
+				{
+					notifyUser("El jugador "+txtPersonaje2.getText()+" ha ganado la partida. Tiene 10 puntos mas para asignar!");
+					this.dispose();
+				};
+				txtTurno.setText(p1.getNombre());
+				turno = 1;
+				}
+				else { throw new ApplicationException(); }
+				
+			}
+		} catch (ApplicationException ae) {
+			notifyUser("Ingrese una cantidad de energia valida",ae, Level.DEBUG);
+		} 
+	}
+	
+	private void defender() {
+		if (turno == 1)
+		{
+			txtEnergia1.setText(String.valueOf(cc.recuperaEnergia(1)));
+			txtVida1.setText(String.valueOf(cc.recuperaVida(1)));
+			txtTurno.setText(p2.getNombre());
+			turno = 2;
+		}
+		else
+		{
+			txtEnergia2.setText(String.valueOf(cc.recuperaEnergia(2))); 
+			txtVida2.setText(String.valueOf(cc.recuperaVida(2)));
+			txtTurno.setText(p1.getNombre());
+			turno = 1;
+		}
+	}
+	
+	
+	private void notifyUser(String mensaje) {
+		JOptionPane.showMessageDialog(null, mensaje, "Warning!", JOptionPane.INFORMATION_MESSAGE);
+	}
+
+	private void notifyUser(String mensaje, Exception e, Level l) {
+		notifyUser(mensaje);
+		SuperLogger.logger.log(l, mensaje, e);
 	}
 }

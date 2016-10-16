@@ -101,6 +101,39 @@ public class DataPersonaje {
 		}
 	}
 	
+	public void updatePuntos(Personaje p) throws ApplicationException{
+		PreparedStatement stmt=null;
+		
+		try {
+			stmt= FactoryConexion.getInstancia().getConn().prepareStatement(
+					"update personajes set puntos_totales=?"+
+					" where id=?");
+			
+			stmt.setInt(1, p.getPuntosTotales() + 10);
+			stmt.setInt(2, p.getId());
+			stmt.execute();
+			
+			
+		} catch (SQLException e) {
+			throw new ApplicationException("Error en el sql al modificar el personaje",e);
+		} catch (ApplicationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				if(stmt!=null)stmt.close();
+				FactoryConexion.getInstancia().releaseConn();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ApplicationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	public Personaje getById(Personaje per) throws ApplicationException{
 		Personaje p=null;
 		
@@ -258,7 +291,6 @@ public class DataPersonaje {
 		
 	}
 
-	// Martin: ver si coincide el nombre a crear
 	public boolean coincideNombre(Personaje p) {
 		PreparedStatement stmt=null;
 		ResultSet rs=null;
