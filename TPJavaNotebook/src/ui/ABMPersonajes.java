@@ -368,7 +368,7 @@ public class ABMPersonajes extends JDialog {
 			notifyUser("La evasion no puede exceder los 80 puntos");
 			valido = false;
 		}		
-		//txtTotal.setText(String.valueOf(puntosMax));
+		txtTotal.setText(String.valueOf(puntosMax));
 		return valido;
 		
 	}

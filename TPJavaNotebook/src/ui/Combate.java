@@ -14,6 +14,7 @@ import entidades.Personaje;
 import logic.CtrlCombate;
 import utils.ApplicationException;
 import utils.SuperLogger;
+import utils.ReproduceAudio;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -46,6 +47,7 @@ public class Combate extends JDialog {
 	private Personaje p2 = new Personaje();
 	private CtrlCombate cc = new CtrlCombate();
 	int turno=1;
+	private ReproduceAudio rep = new ReproduceAudio();
 
 	/**
 	 * Create the dialog.
@@ -115,6 +117,7 @@ public class Combate extends JDialog {
 		btnAtaque.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				atacar();
+				rep.audioAtaque();
 			}
 		});
 		
@@ -302,7 +305,7 @@ public class Combate extends JDialog {
 			else //if (String.valueOf(txtTurno.getText()) == String.valueOf(txtPersonaje2.getText()))
 			{
 				if(cc.validaEnergia(Integer.parseInt(txtEnergiaUsar.getText()),2)){
-					if(!cc.evadir(1))
+					if(!cc.evadir(2))
 				     {
 				txtVida1.setText(String.valueOf(cc.quitaVida(txtEnergiaUsar.getText(),2))); 
 				
