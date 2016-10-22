@@ -328,8 +328,7 @@ public class DataPersonaje {
 			}
 		}
 		
-		return coincide;
-		
+		return coincide;		
 	}
 	
 	

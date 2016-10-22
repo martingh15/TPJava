@@ -26,12 +26,6 @@ public class ReproduceAudio {
 			
 			sonido.start();
 			
-			while(sonido.isRunning())
-			{
-				Thread.sleep(1000);
-			}
-			
-			sonido.close();
 		}catch (Exception e){
 			System.out.println("Error en el audio" + e);
 		}

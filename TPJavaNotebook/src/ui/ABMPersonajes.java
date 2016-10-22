@@ -354,7 +354,6 @@ public class ABMPersonajes extends JDialog {
 		} else
 		{
 			puntosMax = puntosMax - acumulador;
-			txtTotal.setText(String.valueOf(puntosMax));
 			notifyUser("Usted asigno mas puntos de lo permitido (puntos totales)");
 			valido = false;
 		}
@@ -367,8 +366,7 @@ public class ABMPersonajes extends JDialog {
 		{
 			notifyUser("La evasion no puede exceder los 80 puntos");
 			valido = false;
-		}		
-		txtTotal.setText(String.valueOf(puntosMax));
+		}
 		return valido;
 		
 	}

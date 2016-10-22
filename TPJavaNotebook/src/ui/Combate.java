@@ -116,8 +116,9 @@ public class Combate extends JDialog {
 		btnAtaque = new JButton("Atacar");
 		btnAtaque.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				atacar();
 				rep.audioAtaque();
+				atacar();
+				
 			}
 		});
 		
@@ -135,6 +136,7 @@ public class Combate extends JDialog {
 		txtEnergiaUsar = new JTextField();
 		txtEnergiaUsar.setToolTipText("Ingrese energia para el ataque");
 		txtEnergiaUsar.setColumns(10);
+		
 		GroupLayout gl_contentPanel = new GroupLayout(contentPanel);
 		gl_contentPanel.setHorizontalGroup(
 			gl_contentPanel.createParallelGroup(Alignment.LEADING)

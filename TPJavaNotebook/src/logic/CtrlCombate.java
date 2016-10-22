@@ -10,6 +10,54 @@ public class CtrlCombate {
 	private int vidaP1, vidaP2, energiaP1, energiaP2;
 	
 	
+	public Personaje getPers1() {
+		return pers1;
+	}
+
+	public void setPers1(Personaje pers1) {
+		this.pers1 = pers1;
+	}
+
+	public Personaje getPers2() {
+		return pers2;
+	}
+
+	public void setPers2(Personaje pers2) {
+		this.pers2 = pers2;
+	}
+
+	public int getVidaP1() {
+		return vidaP1;
+	}
+
+	public void setVidaP1(int vidaP1) {
+		this.vidaP1 = vidaP1;
+	}
+
+	public int getVidaP2() {
+		return vidaP2;
+	}
+
+	public void setVidaP2(int vidaP2) {
+		this.vidaP2 = vidaP2;
+	}
+
+	public int getEnergiaP1() {
+		return energiaP1;
+	}
+
+	public void setEnergiaP1(int energiaP1) {
+		this.energiaP1 = energiaP1;
+	}
+
+	public int getEnergiaP2() {
+		return energiaP2;
+	}
+
+	public void setEnergiaP2(int energiaP2) {
+		this.energiaP2 = energiaP2;
+	}
+
 	public void seteaPer(Personaje p1, Personaje p2) {
 		pers1 = p1;
 		pers2 = p2;
@@ -84,9 +132,9 @@ public class CtrlCombate {
 					valido = true;
 					dataPer.updatePuntos(pers1);
 				}
-				else {
-					throw new ApplicationException("Error en la Base de Datos");
-				}
+//				else {
+//					throw new ApplicationException("Error en la Base de Datos");
+//				}
 			}
 			else {
 				if(vidaP1 <= 0) 
@@ -94,9 +142,9 @@ public class CtrlCombate {
 					valido = true;
 					dataPer.updatePuntos(pers2);
 				}
-				else {
-					throw new ApplicationException("Error en la Base de Datos");
-				}
+//				else {
+//					throw new ApplicationException("Error en la Base de Datos");
+//				}
 			}
 		} catch (ApplicationException e) {
 			// TODO Auto-generated catch block
