@@ -1,31 +1,37 @@
 package logic;
 import entidades.Personaje;
 import utils.ApplicationException;
+import utils.SuperLogger;
 import data.*;
 import java.util.Random;
+
+import javax.swing.JOptionPane;
+
+import org.apache.logging.log4j.Level;
 
 public class CtrlCombate {
 	private Personaje pers1, pers2;
 	private DataPersonaje dataPer = new DataPersonaje();
 	private int vidaP1, vidaP2, energiaP1, energiaP2;
+	private String perTurno;
+	private String ganador;
 	
+	public String getPerTurno() {
+		return perTurno;
+	}
+
+	public void setPerTurno(int turno) {
+		if (turno == 1) 
+		{
+			perTurno = pers2.getNombre();
+		}
+		else 
+		{
+			perTurno = pers1.getNombre();
+		}
+		
+	}
 	
-	public Personaje getPers1() {
-		return pers1;
-	}
-
-	public void setPers1(Personaje pers1) {
-		this.pers1 = pers1;
-	}
-
-	public Personaje getPers2() {
-		return pers2;
-	}
-
-	public void setPers2(Personaje pers2) {
-		this.pers2 = pers2;
-	}
-
 	public int getVidaP1() {
 		return vidaP1;
 	}
@@ -57,50 +63,65 @@ public class CtrlCombate {
 	public void setEnergiaP2(int energiaP2) {
 		this.energiaP2 = energiaP2;
 	}
+	
+	public String getGanador() {
+		return ganador;
+	}
 
+	public void setGanador(int turno) {
+		if (turno==1)
+		{
+		this.ganador = pers1.getNombre();
+		}
+		else 
+		{
+		  this.ganador = pers2.getNombre();
+		}
+	}
+	
 	public void seteaPer(Personaje p1, Personaje p2) {
 		pers1 = p1;
 		pers2 = p2;
-		vidaP1 = pers1.getVida();
-		vidaP2 = pers2.getVida();
-		energiaP1 = pers1.getEnergia();
-		energiaP2 = pers2.getEnergia();
+		this.setVidaP1(pers1.getVida());
+		this.setVidaP2(pers2.getVida());
+		this.setEnergiaP1(pers1.getEnergia());
+		this.setEnergiaP2(pers2.getEnergia());
 		
 	}
 
-	public int quitaVida( String energia, int turno) {
-		int vida;
-		if (turno == 1)
-		{
-			vidaP2 = vidaP2 -  Integer.parseInt(energia) ;
-			vida = vidaP2;
+
+
+
+
+
+
+
+	
+	//Metodos de ataque
+
+	
+	public boolean ataque(int energia, int turno) throws ApplicationException {
+	boolean	gano = false;
+	
+	if(this.validaEnergia(energia, turno)){
 		
-		}
-		else 
+	
+		this.atacar(energia, turno);
+		if(this.validarPartida(turno)) 
 		{
-			vidaP1 = vidaP1 -  Integer.parseInt(energia) ;
-			vida = vidaP1;
+			gano=true;
+			setGanador(turno);
 		}
-		if(vida <= 0) { vida = 0;}
-		return vida;
+		else
+		{
+		 this.setPerTurno(turno);
+		}
+		return gano;
 	}
+else { throw new ApplicationException();} }
 	
 	
-	public int quitaEnergia( String energia,int turno) {
-		int energiaRest;
-		if (turno == 1)
-		{
-			energiaP1 = energiaP1 -  Integer.parseInt(energia) ;
-			energiaRest = energiaP1;
-		
-		}
-		else 
-		{
-			energiaP2 = energiaP2 -  Integer.parseInt(energia) ;
-			energiaRest = energiaP2;
-		}
-		return energiaRest;
-	}
+	
 
 	public boolean validaEnergia(int energia, int turno) {
 		boolean valido=false;
@@ -113,125 +134,197 @@ public class CtrlCombate {
 			if(energia <= energiaP2){ valido = true;}
 		}
 		
-		if(energia<0) 
+		if(energia<0 || energia == 0) 
 		{
 			valido=false;
 		}
 		
 		return valido;
 	}
-
-	public boolean validarPartida(int turno) {
-		boolean valido = false;
-		try {
-			valido = false;
-			if(turno==1) 
-			{
-				if(vidaP2 <= 0) 
-				{
-					valido = true;
-					dataPer.updatePuntos(pers1);
-				}
-//				else {
-//					throw new ApplicationException("Error en la Base de Datos");
-//				}
-			}
-			else {
-				if(vidaP1 <= 0) 
-				{
-					valido = true;
-					dataPer.updatePuntos(pers2);
-				}
-//				else {
-//					throw new ApplicationException("Error en la Base de Datos");
-//				}
-			}
-		} catch (ApplicationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return valido;
-	}
-
-	public int recuperaEnergia(int turno) {
-		int energ;
-		if (turno ==1)
-		{
-
-			energiaP1 = energiaP1 + (pers1.getEnergia() * pers1.getDefensa())/100;
-			energ = energiaP1;
-			if (energ > pers1.getEnergia())
-			{
-				energiaP1 = pers1.getEnergia();
-				energ = pers1.getEnergia();
-			}
-		}
-		else
-		{
 	
-			energiaP2 = energiaP2 + (pers2.getEnergia() * pers2.getDefensa())/100;
-			energ = energiaP2;
-			if (energ > pers2.getEnergia())
-			{
-				energiaP2 = pers2.getEnergia();
-				energ = pers2.getEnergia();
-			}
-		}
-		return energ;
-	}
 
-	public int recuperaVida(int turno) {
-		int vida;
-		if (turno ==1)
-		{
-			//vidaARecuperar = vidaOriginal * defensa / 250
-			vidaP1 = vidaP1 + (pers1.getVida() * pers1.getDefensa())/250;
-			vida = vidaP1;
-			if (vida > pers1.getVida())
+public void atacar(int energia,int turno)
+{ 
+	
+		 if(!this.evadir(turno))
+	     {
+	this.quitaVida(energia,turno);
+		  }
+		 else 
 			{
-				vidaP1 = pers1.getVida();
-				vida = pers1.getVida();
+				notifyUser("Ataque evadido");
 			}
-		}
-		else
-		{
+		 this.quitaEnergia(energia,turno);
 		
-			vidaP2 = vidaP2 + (pers2.getVida() * pers2.getDefensa())/250;
-			vida = vidaP2;
-			if (vida > pers2.getVida())
-			{
-				vidaP2 = pers2.getVida();
-				vida = pers2.getVida();
-			}
-		}
-		return vida;
-	}
+}
 
-	public boolean evadir(int turno) {
-		Random rnd = new Random();
-		float numAle = rnd.nextFloat();
 
-		boolean evade = false;
-		if (turno == 1)
+public boolean evadir(int turno) {
+	Random rnd = new Random();
+	float numAle = rnd.nextFloat();
+
+	boolean evade = false;
+	if (turno == 1)
+	{
+		//(numAleatorio*100)>puntosDeEvasion
+		if ((numAle*100)<pers2.getEvasion())
 		{
-			//(numAleatorio*100)>puntosDeEvasion
-			if ((numAle*100)<pers2.getEvasion())
-			{
-				evade = true;
-			}
+			evade = true;
 		}
-		
-		else
-		{
-			//(numAleatorio*100)>puntosDeEvasion
-			if ((numAle*100)<pers1.getEvasion())
-			{
-				evade = true;
-			}
-		}
-		
-		return evade;
 	}
 	
+	else
+	{
+		//(numAleatorio*100)>puntosDeEvasion
+		if ((numAle*100)<pers1.getEvasion())
+		{
+			evade = true;
+		}
+	}
+	
+	return evade;
+}
+
+
+public void quitaVida( int energia, int turno) {
+	if (turno == 1)
+	{
+		vidaP2 = vidaP2 - energia ;
+		if(vidaP2 <= 0) { vidaP2 = 0;}
+	}
+	else 
+	{
+		vidaP1 = vidaP1 - energia ;
+		if(vidaP1 <= 0) { vidaP1 = 0;}
+	}
+}
+	
+
+
+public void quitaEnergia( int energia,int turno) {
+	if (turno == 1)
+	{
+		energiaP1 = energiaP1 -  energia ;
+	
+	}
+	else 
+	{
+		energiaP2 = energiaP2 -  energia ;
+	}
+
+}
+
+
+public boolean validarPartida(int turno) {
+	boolean valido = false;
+	try {
+		valido = false;
+		if(turno==1) 
+		{
+			if(vidaP2 <= 0) 
+			{
+				valido = true;
+				dataPer.updatePuntos(pers1);
+			}
+		}
+		else {
+			if(vidaP1 <= 0) 
+			{
+				valido = true;
+				dataPer.updatePuntos(pers2);
+			}
+		}
+	} catch (ApplicationException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	
+	return valido;
+}
+
+// fin de metodos de ataque
+
+
+
+
+//metodos de Defensa
+
+
+
+public void defensa(int turno) {
+	this.recuperaEnergia(turno);
+	this.recuperaVida(turno);
+	this.setPerTurno(turno);
+	
+}
+
+public void recuperaEnergia(int turno) {
+	if (turno ==1)
+	{
+
+		energiaP1 = energiaP1 + (pers1.getEnergia() * pers1.getDefensa())/100;
+	
+		if (energiaP1 > pers1.getEnergia())
+		{
+			energiaP1 = pers1.getEnergia();
+			
+		}
+	}
+	else
+	{
+
+		energiaP2 = energiaP2 + (pers2.getEnergia() * pers2.getDefensa())/100;
+		
+		if (energiaP2 > pers2.getEnergia())
+		{
+			energiaP2 = pers2.getEnergia();
+		}
+	}
+
+}
+
+public void recuperaVida(int turno) {
+	if (turno ==1)
+	{
+		//vidaARecuperar = vidaOriginal * defensa / 250
+		vidaP1 = vidaP1 + (pers1.getVida() * pers1.getDefensa())/250;
+		if (vidaP1 > pers1.getVida())
+		{
+			vidaP1 = pers1.getVida();
+		}
+	}
+	else
+	{
+	
+		vidaP2 = vidaP2 + (pers2.getVida() * pers2.getDefensa())/250;
+		if (vidaP2 > pers2.getVida())
+		{
+			vidaP2 = pers2.getVida();
+		}
+	}
+}
+
+
+
+
+//fin de metodos de Defensa
+
+
+
+private void notifyUser(String mensaje) {
+	JOptionPane.showMessageDialog(null, mensaje, "Warning!", JOptionPane.INFORMATION_MESSAGE);
+}
+
+private void notifyUser(String mensaje, Exception e, Level l) {
+	notifyUser(mensaje);
+	SuperLogger.logger.log(l, mensaje, e);
+}
+
+
+
+
+
+
+
+
 }

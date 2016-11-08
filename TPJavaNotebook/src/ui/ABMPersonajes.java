@@ -279,8 +279,6 @@ public class ABMPersonajes extends JDialog {
 		SuperLogger.logger.log(l, mensaje, e);
 	}
 	
-	
-	
 	public void limpiarCampos()
 	{
 		txtVida.setText("");
@@ -303,6 +301,7 @@ public class ABMPersonajes extends JDialog {
 			limpiarCampos();
 			}		
 	}
+	
 	public Personaje MapearDeFormulario(){
 		Personaje p = new Personaje();
 		p.setVida(Integer.parseInt(txtVida.getText()));

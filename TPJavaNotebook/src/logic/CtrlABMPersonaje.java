@@ -39,6 +39,7 @@ public class CtrlABMPersonaje {
 		Personaje per = dataPer.getById(p);
 		return per;
 	}
+	
 	public void borrarPersonaje(Personaje p)
 	{
 		dataPer.delete(p);

@@ -27,6 +27,10 @@ import java.awt.event.ActionEvent;
 
 public class Combate extends JDialog {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtPersonaje1;
 	private JTextField txtPersonaje2;
@@ -252,6 +256,7 @@ public class Combate extends JDialog {
 		);
 		contentPanel.setLayout(gl_contentPanel);
 	}
+	
 	public void MapearAFormulario(Personaje per1, Personaje per2) {
 	
 			txtPersonaje1.setText(per1.getNombre());
@@ -279,77 +284,53 @@ public class Combate extends JDialog {
 	
 	private void atacar() {
 		try {
-			if (turno == 1)
+			if (cc.ataque(Integer.parseInt(txtEnergiaUsar.getText()),turno))
 			{
-				if(cc.validaEnergia(Integer.parseInt(txtEnergiaUsar.getText()),1)){
-			     if(!cc.evadir(1))
-			     {
-				txtVida2.setText(String.valueOf(cc.quitaVida(txtEnergiaUsar.getText(),1)));
-				
-				  }
-				else 
-				{
-					notifyUser("Ataque evadido");
-				}
-			     txtEnergia1.setText(String.valueOf(cc.quitaEnergia(txtEnergiaUsar.getText(),1))); 
-				if(cc.validarPartida(turno)) 
-				{
-					notifyUser("El jugador "+txtPersonaje1.getText()+" ha ganado la partida. Tiene 10 puntos mas para asignar!");
-					this.dispose();
-				};
-				
-				txtTurno.setText(p2.getNombre());
-				turno = 2;
-				}
-				else { throw new ApplicationException(); }
-				
+				this.Mapear();
+				notifyUser("El jugador "+cc.getGanador()+" ha ganado la partida. Tiene 10 puntos mas para asignar!");
+				this.dispose();
 			}
-			else //if (String.valueOf(txtTurno.getText()) == String.valueOf(txtPersonaje2.getText()))
+			else 
 			{
-				if(cc.validaEnergia(Integer.parseInt(txtEnergiaUsar.getText()),2)){
-					if(!cc.evadir(2))
-				     {
-				txtVida1.setText(String.valueOf(cc.quitaVida(txtEnergiaUsar.getText(),2))); 
-				
-				     }
-					else 
-					{
-						notifyUser("Ataque evadido");
-					}
-					txtEnergia2.setText(String.valueOf(cc.quitaEnergia(txtEnergiaUsar.getText(),2))); 
-				if(cc.validarPartida(turno)) 
-				{
-					notifyUser("El jugador "+txtPersonaje2.getText()+" ha ganado la partida. Tiene 10 puntos mas para asignar!");
-					this.dispose();
-				};
-				txtTurno.setText(p1.getNombre());
-				turno = 1;
-				}
-				else { throw new ApplicationException(); }
-				
+				this.Mapear();
+				this.cambiaTurno();
 			}
 		} catch (ApplicationException ae) {
-			notifyUser("Ingrese una cantidad de energia valida",ae, Level.DEBUG);
-		} 
-	}
-	
+			notifyUser("Ingrese una cantidad de energia valida",ae, Level.DEBUG); 
+		}
+	} 
+		
+		
 	private void defender() {
-		if (turno == 1)
+			
+			cc.defensa(turno);
+			this.Mapear();
+			this.cambiaTurno();
+			}
+	
+	
+	
+	private void Mapear() {
+		txtVida1.setText(String.valueOf(cc.getVidaP1()));
+		txtVida2.setText(String.valueOf(cc.getVidaP2()));
+		txtEnergia1.setText(String.valueOf(cc.getEnergiaP1()));
+		txtEnergia2.setText(String.valueOf(cc.getEnergiaP2()));
+		txtTurno.setText(cc.getPerTurno());
+		
+			
+		}
+	
+	private void cambiaTurno() {
+		if (turno == 1) 
 		{
-			txtEnergia1.setText(String.valueOf(cc.recuperaEnergia(1)));
-			txtVida1.setText(String.valueOf(cc.recuperaVida(1)));
-			txtTurno.setText(p2.getNombre());
 			turno = 2;
 		}
-		else
+		else 
 		{
-			txtEnergia2.setText(String.valueOf(cc.recuperaEnergia(2))); 
-			txtVida2.setText(String.valueOf(cc.recuperaVida(2)));
-			txtTurno.setText(p1.getNombre());
 			turno = 1;
 		}
+		
 	}
-	
 	
 	private void notifyUser(String mensaje) {
 		JOptionPane.showMessageDialog(null, mensaje, "Warning!", JOptionPane.INFORMATION_MESSAGE);
@@ -359,4 +340,6 @@ public class Combate extends JDialog {
 		notifyUser(mensaje);
 		SuperLogger.logger.log(l, mensaje, e);
 	}
+	
+	
 }

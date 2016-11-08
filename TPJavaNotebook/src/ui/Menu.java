@@ -65,6 +65,7 @@ public class Menu {
 	/**
 	 * Initialize the contents of the frame.
 	 */
+	
 	private void initialize() {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 300);
@@ -176,7 +177,6 @@ public class Menu {
 				throw new ApplicationException();
 			}
 		} catch (ApplicationException ae) {
-			// TODO Auto-generated catch block
 			notifyUser("Nombre/s de personaje/s incorrecto/s",ae, Level.DEBUG);
 		}
 	}
